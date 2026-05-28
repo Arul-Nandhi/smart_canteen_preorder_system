@@ -13,6 +13,8 @@ services:
       python seed.py &&
       gunicorn smartserve_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2
     envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.4"
       - key: DEBUG
         value: "False"
       - key: DJANGO_SETTINGS_MODULE

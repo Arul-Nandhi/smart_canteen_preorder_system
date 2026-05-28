@@ -31,7 +31,7 @@ services:
   # ── React Frontend ──────────────────────────────────────
   - type: web
     name: smartcanteen-frontend
-    runtime: static
+    env: static
     region: singapore
     rootDir: frontend
     buildCommand: npm install && npm run build

@@ -341,6 +341,23 @@ export default function StaffOperations() {
   const [filterType, setFilterType] = useState('all');
   const [search, setSearch] = useState('');
   const [billingOrder, setBillingOrder] = useState(null);
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    api.get('/menu/').then(r => setMenuItems(r.data)).catch(() => {});
+  }, []);
+
+  const getComboConstituentsText = (comboItemIds) => {
+    if (!comboItemIds) return '';
+    let ids = [];
+    try {
+      ids = typeof comboItemIds === 'string' ? JSON.parse(comboItemIds) : comboItemIds;
+    } catch {
+      return '';
+    }
+    if (!Array.isArray(ids)) return '';
+    return ids.map(id => menuItems.find(i => i.id === id)?.item_name).filter(Boolean).join(' + ');
+  };
 
   // Live rush level & stats
   const [rushLevel, setRushLevel] = useState('medium');
@@ -712,8 +729,15 @@ export default function StaffOperations() {
                           <div style={{ background: 'var(--surface-2)', padding: 'var(--sp-3)', borderRadius: 8, marginBottom: 'var(--sp-3)' }}>
                             <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-3)', margin: '0 0 6px', textTransform: 'uppercase' }}>Items</p>
                             {order.items.map((item, i) => (
-                              <div key={i} style={{ fontSize: '0.8rem', color: 'var(--text-2)', margin: '2px 0' }}>
-                                {item.quantity}x {item.item_detail?.item_name || 'Unknown Item'} @ ₹{item.item_detail?.price}
+                              <div key={i} style={{ fontSize: '0.8rem', color: 'var(--text-2)', margin: '4px 0' }}>
+                                <div>
+                                  {item.quantity}x {item.item_detail?.item_name || 'Unknown Item'} @ ₹{item.item_detail?.price}
+                                </div>
+                                {item.item_detail?.category === 'combo' && item.item_detail?.combo_items && (
+                                  <div style={{ fontSize: '0.72rem', color: 'var(--teal)', fontWeight: 500, marginTop: 2, paddingLeft: 6 }}>
+                                    ↳ Includes: {getComboConstituentsText(item.item_detail.combo_items)}
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -1018,8 +1042,15 @@ export default function StaffOperations() {
                         {order.items && order.items.length > 0 && (
                           <div style={{ background: 'var(--surface-2)', padding: 'var(--sp-3)', borderRadius: 8 }}>
                             {order.items.map((item, i) => (
-                              <div key={i} style={{ fontSize: '0.8rem', color: 'var(--text-2)', margin: '2px 0' }}>
-                                {item.quantity}x {item.item_detail?.item_name || 'Unknown Item'}
+                              <div key={i} style={{ fontSize: '0.8rem', color: 'var(--text-2)', margin: '4px 0' }}>
+                                <div>
+                                  {item.quantity}x {item.item_detail?.item_name || 'Unknown Item'}
+                                </div>
+                                {item.item_detail?.category === 'combo' && item.item_detail?.combo_items && (
+                                  <div style={{ fontSize: '0.72rem', color: 'var(--teal)', fontWeight: 500, marginTop: 2, paddingLeft: 6 }}>
+                                    ↳ Includes: {getComboConstituentsText(item.item_detail.combo_items)}
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>

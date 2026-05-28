@@ -241,6 +241,94 @@ def seed_menu_items():
             created += 1
             
     print(f"[OK] Successfully seeded {created} menu items from assets.")
+    seed_combos()
+
+def seed_combos():
+    print("Seeding combo menu items...")
+    combos_data = [
+        {
+            'name': 'Masala Dosa Combo',
+            'price': 55.00,
+            'is_veg': True,
+            'description': 'Crispy Masala Dosa + Coconut Chutney + Apple Juice',
+            'image': '/assets/food/breakfast/masala_dosa.jpg',
+            'constituents': ['Masala Dosa', 'Apple Juice']
+        },
+        {
+            'name': 'Egg Biriyani Combo',
+            'price': 129.00,
+            'is_veg': False,
+            'description': 'Egg Biriyani + Raita + Refreshing Mango Juice',
+            'image': '/assets/food/lunch/egg_biriyani.jpg',
+            'constituents': ['Egg Biriyani', 'Mango Juice']
+        },
+        {
+            'name': 'Chicken Burger Fiesta',
+            'price': 119.00,
+            'is_veg': False,
+            'description': 'Spicy Chicken Zinger Burger + Crispy French Fries + Pepsi',
+            'image': '/assets/food/pizza&burger/spicy_chicken_zinger_burger.jpg',
+            'constituents': ['Spicy Chicken Zinger Burger', 'French Fries', 'Pepsi']
+        },
+        {
+            'name': 'Margherita Pizza & Sprite Combo',
+            'price': 99.00,
+            'is_veg': True,
+            'description': 'Classic Margherita Pizza + Ice-cold Sprite',
+            'image': '/assets/food/pizza&burger/classic_margherita_pizza.jpg',
+            'constituents': ['Classic Margherita Pizza', 'Sprite']
+        },
+        {
+            'name': 'Cheeseburger & Pepsi Combo',
+            'price': 95.00,
+            'is_veg': False,
+            'description': 'Classic Cheeseburger + Chilled Pepsi',
+            'image': '/assets/food/pizza&burger/classic_cheeseburger.jpg',
+            'constituents': ['Classic Cheeseburger', 'Pepsi']
+        },
+        {
+            'name': 'Zinger Burger & Coke Combo',
+            'price': 95.00,
+            'is_veg': False,
+            'description': 'Spicy Chicken Zinger Burger + Ice-cold Coca-Cola',
+            'image': '/assets/food/pizza&burger/spicy_chicken_zinger_burger.jpg',
+            'constituents': ['Spicy Chicken Zinger Burger', 'Cocola']
+        },
+        {
+            'name': 'Veggie Pizza & Mirinda Combo',
+            'price': 119.00,
+            'is_veg': True,
+            'description': 'Farmhouse Veggie Pizza + Vibrant Mirinda Soda',
+            'image': '/assets/food/pizza&burger/farmhouse_veggie_pizza.jpg',
+            'constituents': ['Farmhouse Veggie Pizza', 'Mirinda']
+        }
+    ]
+
+    for combo in combos_data:
+        # Get constituent ids
+        ids = []
+        for name in combo['constituents']:
+            item = MenuItem.objects.filter(item_name=name).first()
+            if item:
+                ids.append(item.id)
+            else:
+                print(f"Warning: constituent '{name}' not found for combo '{combo['name']}'")
+
+        if ids:
+            MenuItem.objects.get_or_create(
+                item_name=combo['name'],
+                category='combo',
+                defaults={
+                    'price': combo['price'],
+                    'is_veg': combo['is_veg'],
+                    'description': combo['description'],
+                    'prep_time_mins': 12,
+                    'availability': True,
+                    'image': combo['image'],
+                    'combo_items': ids
+                }
+            )
+            print(f"   Created combo: {combo['name']} with {len(ids)} items.")
 
 if __name__ == '__main__':
     seed_menu_items()

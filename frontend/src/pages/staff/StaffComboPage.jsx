@@ -237,6 +237,15 @@ export default function StaffComboPage() {
     return natural > 0 && comboPrice < natural ? Math.round(((natural - comboPrice) / natural) * 100) : 0;
   };
 
+  const getComboImage = (combo) => {
+    if (combo.image) return combo.image;
+    const constituents = getConstituentItems(combo.combo_items);
+    if (constituents.length > 0 && constituents[0].image) {
+      return constituents[0].image;
+    }
+    return null;
+  };
+
   return (
     <StaffLayout title="Combo Meals" subtitle="Create and manage food combo packages">
 
@@ -373,9 +382,9 @@ export default function StaffComboPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16 }}>
           {combos.map(combo => (
             <div key={combo.id} className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
-              {combo.image ? (
+              {getComboImage(combo) ? (
                 <div style={{ height: 140, overflow: 'hidden', background: 'var(--surface-2)' }}>
-                  <img src={combo.image} alt={combo.item_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={getComboImage(combo)} alt={combo.item_name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               ) : (
                 <div style={{ height: 100, background: 'linear-gradient(135deg, rgba(20,209,178,0.1), rgba(167,139,250,0.1))', display: 'flex', alignItems: 'center', justifycontent: 'center', fontSize: '2.5rem' }}>

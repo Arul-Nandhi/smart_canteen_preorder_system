@@ -4,6 +4,7 @@ import { Zap, Tag, ShoppingBag, Clock, Flame, Leaf, Egg, Drumstick } from 'lucid
 import Navbar from '../components/Navbar';
 import FoodDetailModal from '../components/FoodDetailModal';
 import { useCart } from '../context/CartContext';
+import api from '../services/api';
 import toast from 'react-hot-toast';
 
 /* ── Flash Sale countdown hook ── */
@@ -153,7 +154,7 @@ function FlashCard({ deal, endMs, onAdd, onCardClick }) {
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
-    deal.items.forEach(item => onAdd(item));
+    onAdd(deal);
     setAdded(true);
     toast.success(`Combo added to Plate!`);
     setTimeout(() => setAdded(false), 2200);
@@ -332,49 +333,74 @@ export default function Offers() {
   const [flashEnd] = useState(() => Date.now() + 6 * 3600 * 1000);
   const [selectedCombo, setSelectedCombo] = useState(null);
 
-  const [flashSales, setFlashSales] = useState(() => {
-    const saved = localStorage.getItem('liveOffers');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return parsed.filter(item => item.id && item.id.startsWith('f'));
-    }
-    return FLASH_SALES;
-  });
+  const [flashSales, setFlashSales] = useState([]);
+  const [pizzaBurgerCombos, setPizzaBurgerCombos] = useState([]);
+  const [categories, setCategories] = useState(CATEGORIES);
+  const [juices, setJuices] = useState(JUICE_COMBOS);
 
-  const [pizzaBurgerCombos, setPizzaBurgerCombos] = useState(() => {
-    const saved = localStorage.getItem('liveOffers');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return parsed.filter(item => item.id && item.id.startsWith('pbc'));
-    }
-    return PIZZA_BURGER_COMBOS;
-  });
+  useEffect(() => {
+    api.get('/menu/').then(res => {
+      const allItems = res.data;
 
-  const [categories, setCategories] = useState(() => {
-    const saved = localStorage.getItem('catOffers');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return CATEGORIES.map(cat => {
-        const matchedDeals = parsed.filter(deal => {
-          const tagLower = deal.tag ? deal.tag.toLowerCase() : '';
-          return tagLower === cat.id || tagLower.replace('-', '') === cat.id;
-        });
+      // 1. Filter and map combos
+      const dbCombos = allItems.filter(i => i.category === 'combo');
+      
+      const mapCombo = (c) => ({
+        id: c.id,
+        name: c.item_name,
+        desc: c.description || '',
+        offer: parseFloat(c.price),
+        original: Math.round(parseFloat(c.price) * 1.25),
+        tag: c.is_veg ? 'veg' : 'nonveg',
+        image: c.image || '/assets/food/lunch/veg_meals.jpg',
+        combo_items: c.combo_items,
+        category: 'combo'
+      });
+
+      const flash = dbCombos.filter(c => !/pizza|burger|fiesta/i.test(c.item_name));
+      const pb = dbCombos.filter(c => /pizza|burger|fiesta/i.test(c.item_name));
+
+      setFlashSales(flash.map(mapCombo));
+      setPizzaBurgerCombos(pb.map(mapCombo));
+
+      // 2. Map juice combos to db items
+      const mappedJuices = JUICE_COMBOS.map(jc => {
+        const matched = allItems.find(i => i.item_name.toLowerCase() === jc.name.toLowerCase());
+        return matched ? {
+          id: matched.id,
+          name: matched.item_name,
+          desc: matched.description || jc.desc,
+          price: parseFloat(matched.price),
+          original: jc.original,
+          image: matched.image
+        } : jc;
+      });
+      setJuices(mappedJuices);
+
+      // 3. Map category offers to db items
+      const mappedCategories = CATEGORIES.map(cat => {
         return {
           ...cat,
-          deals: matchedDeals.map((deal, idx) => ({
-            id: deal.id || `${cat.id}-deal-${idx}`,
-            name: deal.name,
-            desc: deal.desc || deal.description || '',
-            original: deal.original,
-            offer: deal.offer,
-            image: deal.image,
-            items: deal.items || [{ item_name: deal.name, price: deal.offer, category: cat.id, is_veg: cat.id === 'veg' }]
-          }))
+          deals: cat.deals.map(deal => {
+            const matched = allItems.find(i => i.item_name.toLowerCase() === deal.name.toLowerCase());
+            return matched ? {
+              id: matched.id,
+              name: matched.item_name,
+              desc: matched.description || deal.desc,
+              offer: parseFloat(matched.price),
+              original: deal.original,
+              image: matched.image,
+              is_veg: matched.is_veg
+            } : deal;
+          })
         };
       });
-    }
-    return CATEGORIES;
-  });
+      setCategories(mappedCategories);
+
+    }).catch(err => {
+      console.error("Failed to load offers", err);
+    });
+  }, []);
 
   const getQty = (id) => cart.find(i => i.id === id)?.qty || 0;
 
@@ -388,11 +414,7 @@ export default function Offers() {
           food={selectedCombo}
           qty={getQty(selectedCombo.id)}
           onAdd={(item) => {
-            if (item.items) {
-              item.items.forEach(it => addItem(it));
-            } else {
-              addItem(item);
-            }
+            addItem(item);
             toast.success(`Combo added to Plate!`);
           }}
           onUpdateQty={updateQty}
@@ -462,7 +484,7 @@ export default function Offers() {
             <h2 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-1)' }}>Juice &amp; Beverage Combos</h2>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
-            {JUICE_COMBOS.map(item => <DrinkCard key={item.id} item={item} onCardClick={setSelectedCombo} />)}
+            {juices.map(item => <DrinkCard key={item.id} item={item} onCardClick={setSelectedCombo} />)}
           </div>
         </section>
 

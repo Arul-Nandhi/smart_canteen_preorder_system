@@ -230,6 +230,23 @@ export default function StaffBillingPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [billingOrder, setBillingOrder] = useState(null);
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    api.get('/menu/').then(r => setMenuItems(r.data)).catch(() => {});
+  }, []);
+
+  const getComboConstituentsText = (comboItemIds) => {
+    if (!comboItemIds) return '';
+    let ids = [];
+    try {
+      ids = typeof comboItemIds === 'string' ? JSON.parse(comboItemIds) : comboItemIds;
+    } catch {
+      return '';
+    }
+    if (!Array.isArray(ids)) return '';
+    return ids.map(id => menuItems.find(i => i.id === id)?.item_name).filter(Boolean).join(' + ');
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -406,9 +423,16 @@ export default function StaffBillingPage() {
                     {/* Food Items snapshot */}
                     <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 8, marginBottom: 16 }}>
                       {order.items?.map((item, idx) => (
-                        <div key={idx} style={{ fontSize: '0.78rem', color: 'var(--text-2)', display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
-                          <span>{item.item_detail?.item_name || 'Canteen Item'}</span>
-                          <span style={{ fontWeight: 700, color: 'var(--text-3)' }}>×{item.quantity}</span>
+                        <div key={idx} style={{ fontSize: '0.78rem', color: 'var(--text-2)', padding: '3px 0' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>{item.item_detail?.item_name || 'Canteen Item'}</span>
+                            <span style={{ fontWeight: 700, color: 'var(--text-3)' }}>×{item.quantity}</span>
+                          </div>
+                          {item.item_detail?.category === 'combo' && item.item_detail?.combo_items && (
+                            <div style={{ fontSize: '0.72rem', color: 'var(--teal)', fontWeight: 500, marginTop: 2, paddingLeft: 6 }}>
+                              ↳ Includes: {getComboConstituentsText(item.item_detail.combo_items)}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

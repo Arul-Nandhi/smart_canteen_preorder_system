@@ -32,7 +32,6 @@ services:
   - type: web
     name: smartcanteen-frontend
     env: static
-    region: singapore
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
@@ -49,7 +48,6 @@ services:
         fromService:
           name: smartcanteen-backend
           type: web
-          property: host
           envVarKey: RENDER_EXTERNAL_URL
 
 # ── PostgreSQL Database ─────────────────────────────────

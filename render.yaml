@@ -29,8 +29,9 @@ services:
           property: connectionString
 
   # ── React Frontend ──────────────────────────────────────
-  - type: static
+  - type: web
     name: smartcanteen-frontend
+    runtime: static
     region: singapore
     rootDir: frontend
     buildCommand: npm install && npm run build

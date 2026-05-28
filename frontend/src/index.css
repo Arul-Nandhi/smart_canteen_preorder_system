@@ -668,18 +668,225 @@ button { cursor: pointer; font-family: var(--font-main); border: none; backgroun
   display: block;
 }
 
+
 /* ═══════════════════════════════════════════════════════
-   LANDING PAGE
+   LANDING PAGE — SINGLE-SCREEN MOSAIC HERO
 ═══════════════════════════════════════════════════════ */
-.landing-nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 100;
-  background: var(--nav-bg);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  transition: background var(--t-med);
+
+/* Full-viewport wrapper */
+.landing-fullscreen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
+
+/* ── Food Mosaic Background ── */
+.landing-mosaic {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 3px;
+  z-index: 0;
+}
+
+.mosaic-cell {
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.55) saturate(1.2);
+  animation: mosaicFadeIn 0.8s ease both;
+  transition: filter 0.4s ease;
+}
+.mosaic-cell:hover { filter: brightness(0.7) saturate(1.4); }
+
+@keyframes mosaicFadeIn {
+  from { opacity: 0; transform: scale(1.05); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Gradient overlay */
+.mosaic-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(11,15,20,0.55) 0%, rgba(11,15,20,0.80) 100%);
+  z-index: 1;
+}
+
+/* ── Hero Card (glassmorphism) ── */
+.landing-hero-card {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 56px 64px;
+  max-width: 640px;
+  width: calc(100% - 48px);
+  background: rgba(17, 24, 32, 0.72);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 24px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(20,209,178,0.08);
+  animation: heroCardSlide 0.7s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes heroCardSlide {
+  from { opacity: 0; transform: translateY(32px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Logo */
+.landing-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+.landing-logo-icon {
+  width: 40px; height: 40px;
+  background: var(--teal);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #0B0F14;
+  box-shadow: 0 0 20px rgba(20,209,178,0.4);
+}
+.landing-logo-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+.landing-logo-name span { color: var(--teal); }
+
+/* Headline */
+.landing-headline {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+  animation: fadeInUp 0.6s ease 0.15s both;
+}
+.landing-headline-accent { color: var(--teal); }
+
+/* Tagline */
+.landing-tagline {
+  font-size: clamp(0.88rem, 1.8vw, 1rem);
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  max-width: 440px;
+  margin-bottom: 28px;
+  animation: fadeInUp 0.6s ease 0.25s both;
+}
+
+/* Feature badges row */
+.landing-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+  animation: fadeInUp 0.6s ease 0.32s both;
+}
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(20,209,178,0.12);
+  border: 1px solid rgba(20,209,178,0.25);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--teal);
+  white-space: nowrap;
+}
+
+/* CTA buttons */
+.landing-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  animation: fadeInUp 0.6s ease 0.4s both;
+}
+
+.landing-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 28px;
+  background: var(--teal);
+  color: #0B0F14;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-family: var(--font-main);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 0 0 0 var(--teal-glow);
+}
+.landing-btn-primary:hover {
+  background: #10bca0;
+  box-shadow: 0 0 0 5px rgba(20,209,178,0.25);
+  transform: translateY(-2px);
+}
+
+.landing-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 28px;
+  background: rgba(255,255,255,0.06);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  font-family: var(--font-main);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  backdrop-filter: blur(8px);
+}
+.landing-btn-outline:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.35);
+  transform: translateY(-2px);
+}
+
+/* Footer note */
+.landing-footer-note {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  animation: fadeInUp 0.6s ease 0.5s both;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .landing-mosaic {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+  .landing-hero-card {
+    padding: 40px 28px;
+  }
+  .landing-headline { font-size: 1.75rem; }
+}
+
+
 
 /* Hero */
 .hero-section {

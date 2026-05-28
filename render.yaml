@@ -9,11 +9,9 @@ services:
       pip install -r requirements.txt &&
       python manage.py collectstatic --noinput
     startCommand: >
-      gunicorn smartserve_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2
-    # Run migrations + seed data on every deploy
-    preDeployCommand: >
       python manage.py migrate --noinput &&
-      python seed.py
+      python seed.py &&
+      gunicorn smartserve_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 2
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.0"
@@ -31,10 +29,8 @@ services:
           property: connectionString
 
   # ── React Frontend ──────────────────────────────────────
-  - type: web
+  - type: static
     name: smartcanteen-frontend
-    env: node
-    plan: free
     region: singapore
     rootDir: frontend
     buildCommand: npm install && npm run build
@@ -62,3 +58,4 @@ databases:
     user: smartcanteen_user
     plan: free
     region: singapore
+

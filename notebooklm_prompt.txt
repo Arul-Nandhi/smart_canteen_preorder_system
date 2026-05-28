@@ -1,0 +1,279 @@
+<VSCode.Cell language="markdown">
+Generate a professional Full Stack Python Project Report by strictly following the structure, chapter arrangement, formatting style, and academic layout of the uploaded reference report. Use the uploaded report only as a formatting and structural reference. Do not copy its original topic or content. The new report must be completely based on a Full Stack Python project.
+
+The report should begin with a Title Page only. The next page must start directly with the Abstract. Follow the same sequence and formatting pattern used in the uploaded report throughout the document.
+
+The report must contain:
+Abstract, Table of Contents, List of Figures, List of Abbreviations, Introduction, Literature Survey, System Analysis, Proposed System, System Architecture, Methodology, Frontend Development, Backend Development, Database Design, API Integration, Authentication & Security, Implementation, Testing, Results and Discussion, Conclusion and Future Scope, References, Appendix, Source Code, and Screenshots.
+
+Do not create separate small chapters for frontend, backend, and database. Merge them naturally into the implementation-oriented chapters and explain them professionally in paragraph format.
+
+The report must be written completely in detailed academic writing style suitable for university project submission. Every chapter should contain elaborate explanations with technical depth. Avoid empty spaces, placeholders, forms, bullet-style blanks, or questionnaire format. Write complete professional content throughout the report.
+
+Formatting Requirements:
+
+- Total Length: 80 to 90 pages
+- Font Style: Times New Roman
+- Font Color: Black
+- Heading Size: 14
+- Subheading Size: 13
+- Paragraph Size: 12
+- Line spacing and alignment should follow formal academic report standards
+- Use justified paragraphs
+- Add page numbers properly
+- Include relevant diagrams, architecture images, workflow figures, UI screenshots, database diagrams, and implementation images wherever necessary
+- Maintain consistent heading hierarchy and formatting across the entire document
+
+The report content must be fully related to a modern Full Stack Python project using technologies such as Python, Flask/Django/FastAPI, HTML, CSS, JavaScript, React, MySQL/PostgreSQL/MongoDB, REST APIs, Authentication Systems, and Deployment concepts where appropriate.
+
+The Abstract, Methodology, Implementation, and Result chapters should be highly detailed and technically strong. The report should appear like a real final-year engineering project documentation.
+
+Include:
+
+- Proper figure captions
+- Technical explanations
+- Module descriptions
+- Workflow explanations
+- Architecture descriptions
+- Testing analysis
+- Result interpretation
+- References in academic format
+- Appendix with source code snippets
+- Application screenshots
+
+Use images wherever required to improve explanation quality and professional appearance. The final output must look exactly like a professionally formatted university project report in Word document (.docx) format.
+
+Project Title (use this as the subject of the project): Smart Canteen Portal — Full Stack Python Application
+
+Project Overview (provide an expanded academic-level description):
+- Short description: The Smart Canteen Portal is a full-stack web application designed to digitize and optimize campus/office canteen operations. It provides menu browsing, slot-based ordering, real-time queue/slot management, order tracking, secure authentication (students/staff/admin), payment integration, analytics dashboard, and realtime notifications.
+- Key motivations: reduce waiting time, automate billing and inventory insights, enable scheduled ordering, support dietary filters, and provide admin tools for menu management and analytics.
+
+Project Objectives (expand into academic objectives and measurable deliverables):
+- Primary objective: Design, implement, and deploy a production-ready full-stack Python application that supports secure user authentication, menu management, slot-based orders, payments, realtime updates, and analytics.
+- Secondary objectives: Demonstrate sound software engineering practices (modular design, unit & integration tests, CI-friendly structure), database normalization, RESTful API design, and deployment to a cloud platform.
+
+Target Users and Use Cases (expand into context of use, personas, and scenario descriptions):
+- Users: Students, employees, canteen staff, and administrators.
+- Use cases:
+  1. Student places pre-order for a meal in a time slot and receives a QR code.
+  2. Canteen staff view incoming orders and prepare food; mark readiness.
+  3. Admin updates menu, adds combos, views daily revenue/analytics.
+  4. System sends realtime notifications for order status and slot availability.
+
+Technology Stack (explicit; explain rationale for chosen stack):
+- Backend: Python 3.10+ with Django (Django REST Framework) or FastAPI (specify one in final report); mention choice rationale (Django for admin+ORM, DRF for APIs).
+- Frontend: React (functional components, hooks) + TailwindCSS or plain CSS; HTML5, JavaScript (ES6+).
+- Database: PostgreSQL (primary), Redis for caching/queues, optional MongoDB for session analytics (explain pros/cons).
+- Realtime: WebSockets via Django Channels or FastAPI + WebSocket support; use Redis as channel layer.
+- Authentication: JWT-based access tokens (access + refresh), secure password hashing (PBKDF2/Argon2), role-based access control.
+- APIs: RESTful endpoints for all core functions; OpenAPI documentation (Swagger/Redoc).
+- DevOps / Deployment: Docker, Docker Compose, Gunicorn/Uvicorn, Nginx reverse proxy, CI with GitHub Actions, deployment to AWS/GCP/Heroku.
+- Testing: Pytest for backend, Jest + React Testing Library for frontend, Postman/Newman for API tests, Selenium for end-to-end checks.
+- Misc: Celery for background tasks (email, report generation), Stripe/PayPal sandbox for payments.
+
+High-level Requirements (Functional & Non-functional):
+- Functional: user registration/login, menu CRUD, order placement, slot booking, payment processing, admin analytics, notifications, reporting.
+- Non-functional: concurrency safety for slot booking, 99.9% uptime target for demo, secure transport (HTTPS), data privacy (GDPR-style note), scalable architecture.
+
+Detailed Module & Component Breakdown (for NotebookLM to expand into chapters):
+1. User Management
+   - Registration: fields, email verification workflow, optional OTP.
+   - Roles: `User`, `Staff`, `Admin`, role permissions matrix.
+   - Profile management and order history.
+
+2. Menu & Catalog
+   - Menu model: items, categories, price, food_type (veg/non-veg), allergens, nutrition info, images.
+   - Combo items and dynamic pricing rules.
+
+3. Slots & Queue Engine
+   - Slot model: start/end time, capacity, booked_count.
+   - Concurrency control strategies: DB transactions with SELECT FOR UPDATE, optimistic locking, Redis-based counters.
+   - Queue engine design: FIFO order processing, cancellation/release rules.
+
+4. Ordering & Payments
+   - Order lifecycles: created → paid → preparing → ready → collected → completed/cancelled.
+   - Payment integration details: flow for test mode, webhook handling, idempotency.
+   - Billing: invoice generation, billing history.
+
+5. Realtime & Notifications
+   - WebSocket channels/topics, consumer responsibilities.
+   - Push notifications: in-app toasts, email (Celery), and optional SMS gateway.
+   - Notification payload examples.
+
+6. Admin & Analytics
+   - Dashboard metrics: daily revenue, most-sold items, occupancy per slot, peak hours.
+   - Exportable CSV/PDF reports.
+   - Role-based admin screens and logging.
+
+7. API Design
+   - Endpoint taxonomy: authentication, menus, orders, slots, admin, analytics.
+   - Example endpoints with method, path, request/response JSON schemas, HTTP status codes, and authentication requirement.
+   - Rate limiting strategies.
+
+8. Database Design
+   - ER diagram description and table list: Users, MenuItem, Category, Slot, Order, OrderItem, Payment, Notification, AuditLog.
+   - Normalization notes, indexing strategy (FKs, frequent query fields, full-text search for menu), sample SQL schema.
+
+9. Security & Authentication
+   - JWT flows, refresh token rotation, secure cookie usage vs. token in header.
+   - CSRF protection approach for cookie-auth frontends.
+   - OWASP considerations: input validation, SQL injection mitigation (ORM usage), XSS, secure headers (CSP, HSTS), CORS policy.
+   - Password policy and account lockout rules.
+
+10. Deployment & DevOps
+    - Dockerfile examples, `docker-compose.yml` services (web, db, redis, worker, nginx).
+    - CI pipeline: lint → unit tests → build → deploy to staging.
+    - Production notes: SSL termination, load balancing, DB backups, migrations strategy, secrets management.
+
+11. Testing Strategy
+    - Unit tests for models and utility functions.
+    - Integration tests for API endpoints (auth flows, order flows).
+    - End-to-end scenarios for critical paths (order placement → payment → collection).
+    - Performance testing plan: simulate concurrent bookings (JMeter/Locust) with target throughput and latency thresholds.
+    - Test coverage targets and quality gates.
+
+12. UX / Frontend Considerations
+    - Component structure: authentication flows, menu browsing, cart & checkout, slot booking widget, admin pages.
+    - Accessibility notes (ARIA roles, keyboard nav).
+    - Responsive design considerations and screenshot list for each major view.
+
+Architecture & Diagrams (instructions for NotebookLM to generate):
+- Provide an explicit architecture diagram description: client browsers/mobile → Nginx → backend app (Gunicorn/Uvicorn) → PostgreSQL + Redis + Celery workers; WebSocket channel layer via Redis; third-party services (Stripe, Email provider).
+- Provide a deployment diagram for Docker Compose and a cloud diagram for multi-instance scaling and load balancer.
+- Provide sequence diagrams for:
+  - User registration & email verification.
+  - Order placement & payment webhook processing.
+  - Slot reservation with concurrency control and rollback on failure.
+
+Database Schema (explicit tables and representative fields — include types):
+- Users: id (PK, UUID), username, full_name, email (unique), password_hash, role, is_active, created_at, updated_at.
+- Categories: id, name, description.
+- MenuItem: id, name, description, price (decimal), category_id (FK), is_veg (bool), image_url, calories, allergens, available (bool), created_at.
+- Slot: id, name, start_time, end_time, capacity (int), booked_count (int), is_active.
+- Order: id, user_id (FK), slot_id (FK), total_amount, status (enum), placed_at, paid_at.
+- OrderItem: id, order_id (FK), menu_item_id (FK), quantity, price_each.
+- Payment: id, order_id (FK), provider, amount, status, transaction_id, created_at.
+- Notification, AuditLog, Settings tables.
+
+API Catalog (detailed examples):
+- Auth:
+  - POST /api/auth/register — body: {name,email,password} → 201, sends verification.
+  - POST /api/auth/login — returns access_token + refresh_token.
+  - POST /api/auth/refresh — returns new access token.
+- Menu:
+  - GET /api/menus — filter by category, veg, search term, pagination.
+  - POST /api/admin/menus — Admin-only create menu item.
+- Slots:
+  - GET /api/slots — availability.
+  - POST /api/book-slot — request {slot_id, user_id, cart}.
+- Orders:
+  - POST /api/orders — create order & redirect to payment.
+  - GET /api/orders/{id} — order status and items.
+- Payments:
+  - POST /api/payments/create — create payment intent.
+  - POST /api/payments/webhook — provider webhook handling.
+
+Concurrency & Scalability Details:
+- Slot booking concurrency control: algorithm with example pseudocode using transactions or Redis Lua script for atomic counter decrement and rollback on error.
+- Caching strategy: cache menus and static assets in CDN; use Redis for frequently-read analytics counters.
+- Horizontal scaling notes: stateless web tier, sticky sessions vs token-based auth.
+
+Testing and Expected Results:
+- Provide concrete test scenarios and expected outcomes:
+  - Scenario: 200 concurrent booking attempts on a slot with capacity 50 → expect 50 successful bookings, 150 rejections with appropriate error code; metrics collection.
+  - Functional tests: verify JWT token expiry & refresh behavior; idempotency of payment webhooks.
+- Include sample test result tables and graphs to be generated (throughput vs latency, success/failure counts).
+
+Implementation Plan & Module Descriptions (paragraph style, to be expanded into chapters):
+- For each module (User Management, Menu, Order Processing, Slots, Payments, Notifications, Admin), provide a 2–4 paragraph description: responsibilities, data flows, key classes/modules, error handling, API exposure, and integration with other modules.
+
+Methodology (research & development):
+- Adopt Agile-style iterative development with sprints: requirements gathering, design, implementation, testing, deployment.
+- Use UML/ER diagrams, sequence diagrams, test-driven development (TDD) for core logic, code reviews, and continuous integration.
+- Rationale for chosen frameworks and libraries.
+
+Implementation Details (technical depth required for Abstract/Methodology/Implementation chapters):
+- Provide code architecture explanation: project layout (Django app modules or FastAPI routers), key design patterns (Repository pattern for DB access, Service layer for business logic), and example function signatures.
+- Deployment scripts, environment configuration, secrets handling.
+- Logging & monitoring: how logs are structured, error aggregation (Sentry), metrics (Prometheus/Grafana), and alerting thresholds.
+
+Results and Discussion (what to include):
+- Simulated or expected outputs: throughput graphs, slot utilization heatmaps, revenue summaries, sample payloads.
+- Discussion on limitations, reliability under stress, security analysis, and mitigation strategies.
+- Interpretation of analytics: top-selling items, peak hour trends, percentage of no-shows.
+
+Screenshots and Source Code Appendix (instructions for NotebookLM):
+- Include UI screenshots: Home, Menu listing, Item details, Cart & Checkout, Slot booking UI, Order status page, Admin dashboard (analytics & menu management).
+- For each screenshot include caption and explanation of the UI flow it demonstrates.
+- Source code inclusion approach: include key file snippets in Appendix (models, serializers, major API handlers, WebSocket consumers, Celery tasks, Dockerfile, docker-compose, CI workflow).
+- In Appendix: include full requirements.txt, key `settings.py` excerpts (sensitive values redacted), and a README with run instructions.
+
+Formatting & Academic Requirements (explicit to force NotebookLM output):
+- Strictly follow the uploaded reference report's structure and chapter arrangement; use the uploaded as formatting template only (do not copy content).
+- Title page (one page only) then start Abstract on page 2.
+- Font: Times New Roman; headings size: 14; subheadings: 13; paragraphs: 12; color: black; justified alignment; add page numbers.
+- Total length target: 80–90 pages — expand sections with diagrams, code snippets, tables, and extended methodology and testing analysis to meet length.
+- Include: Abstract, Table of Contents, List of Figures, List of Abbreviations, Introduction, Literature Survey, System Analysis, Proposed System, System Architecture, Methodology, Frontend Development, Backend Development, Database Design, API Integration, Authentication & Security, Implementation, Testing, Results and Discussion, Conclusion and Future Scope, References, Appendix, Source Code, Screenshots.
+
+Literature Survey Guidance (for NotebookLM to produce academic content):
+- Compare related digital canteen/order systems, queue management research, slot booking concurrency papers, and studies on food ordering UX.
+- Cite academic and industry sources (journal articles, conference papers, authoritative blogs) in IEEE or APA style. Provide 25–40 relevant citations (mix of academic papers and developer docs).
+
+References & Citation Format:
+- Provide references in academic format (IEEE/APA) and ensure in-text citations where necessary in chapters.
+- Include links to framework docs (Django, React), database references (PostgreSQL docs), and third-party service docs (Stripe API).
+
+Appendix Requirements:
+- Include test logs, sample Postman collections (export), API schema (OpenAPI/Swagger), and database dump schema (DDL).
+- Include code snippets for critical algorithms (slot booking pseudocode, payment webhook handler, WebSocket consumer logic).
+
+Deliverables Checklist (for inclusion in report as a deliverable list):
+- Title Page
+- Abstract (one page)
+- Full Chapters as listed above
+- Figures with captions and alt-text
+- Tables (ER schema, API catalog, Test result tables)
+- References section (formatted)
+- Appendix with code snippets and Postman collection
+- Screenshots with captions
+- Full source code repository link (or included zipped appendix)
+
+Suggested Figures & Tables (captions + short descriptions):
+- Figure: System Architecture Diagram — "High-level system components and interactions."
+- Figure: Deployment Diagram — "Docker and cloud deployment topology."
+- Figure: ER Diagram — "Database entities and relationships."
+- Figure: Sequence Diagram for Order Placement — "Interaction between client, API, payment provider, and notification subsystem."
+- Table: API Endpoint Catalog — "Paths, methods, auth, inputs, outputs."
+- Table: Test Cases & Results — "Test purpose, inputs, expected, actual."
+
+Sample Abstract (one paragraph — NotebookLM should rewrite academically):
+- Provide a technical abstract summarizing aims, approach, technologies, major contributions, and high-level results/metrics.
+
+Instructions for NotebookLM about tone and style:
+- Use formal academic style, third person, past/present tense as appropriate.
+- Avoid first-person "I"; use "the system", "this project", "the proposed solution".
+- Each chapter must be detailed, with technical depth suitable for a final-year engineering thesis.
+- Merge frontend/backend/database content naturally into implementation-themed chapters (do not split into micro-chapters).
+- Maintain consistent heading hierarchy and formatting.
+
+Final notes for NotebookLM to produce the .docx:
+- Generate the report as a Word document (.docx) with proper styles applied (Title, Heading 1, Heading 2, Normal).
+- Embed figures (use placeholders if actual images unavailable) with captions and cross-references.
+- Insert page numbers and a formatted Table of Contents that is auto-updateable.
+- Provide a downloadable `.docx` file and also include a plain-text appendix of the source code.
+
+Optional: Example metrics & expected numbers to seed Results chapter:
+- Average order placement time under normal load: < 500 ms.
+- Slot throughput test: 200 concurrent users, 95th percentile latency < 1s for booking operations.
+- Typical daily orders in pilot: 500–2000 (scale scenarios).
+- Expected accuracy of slot booking under test: 100% capacity enforcement.
+
+Wrap-up instruction for NotebookLM:
+- Use the project details above (Smart Canteen Portal) to generate the complete 80–90 page professional report strictly following the uploaded formatting template.
+- Expand each module and chapter into multi-page sections with diagrams, tables, code snippets, and academic citations so the final `.docx` matches the structure and length targets.
+- Ensure the Abstract, Methodology, Implementation, and Results chapters are especially detailed and technically strong.
+- Output: one compiled `.docx` file ready for university submission and a separate folder with appended source code and screenshots.
+
+End of prompt. Generate the .docx and attachments now, ensuring all formatting, headings, figure captions, and page numbering follow the uploaded template exactly.
+</VSCode.Cell>

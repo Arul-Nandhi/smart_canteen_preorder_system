@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Receipt - {{ billing.receipt_number }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; color:#111; padding:20px; }
+    .receipt { max-width:720px; margin:0 auto; border:1px solid #ddd; padding:18px; }
+    .header { display:flex; justify-content:space-between; align-items:center; }
+    h1 { margin:0; font-size:20px; }
+    .meta { font-size:12px; color:#666; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th,td { padding:8px; border-bottom:1px solid #eee; text-align:left; }
+    .right { text-align:right; }
+    .total { font-weight:800; font-size:1.1rem; }
+    .foot { margin-top:12px; font-size:12px; color:#444; }
+  </style>
+</head>
+<body>
+  <div class="receipt">
+    <div class="header">
+      <div>
+        <h1>SmartServe Receipt</h1>
+        <div class="meta">Receipt: {{ billing.receipt_number }} | Order: {{ order.token_number }}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="meta">Date: {{ billing.created_at }}</div>
+        <div class="meta">Handled by: {{ billing.handled_by.name if billing.handled_by }}</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Item</th><th>Qty</th><th class="right">Price</th></tr>
+      </thead>
+      <tbody>
+        {% for it in order.items.all %}
+        <tr>
+          <td>{{ it.item.item_name }}</td>
+          <td>{{ it.quantity }}</td>
+          <td class="right">₹{{ it.subtotal }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div style="display:flex; justify-content:space-between; margin-top:12px;">
+      <div>
+        <div class="foot">Notes: {{ billing.notes }}</div>
+      </div>
+      <div style="text-align:right">
+        <div>Subtotal: ₹{{ billing.total_amount }}</div>
+        <div>Received: ₹{{ billing.received_amount }}</div>
+        <div>Change: ₹{{ billing.change_amount }}</div>
+        <div class="total">Total: ₹{{ billing.total_amount }}</div>
+      </div>
+    </div>
+
+    <div class="foot">Thank you for choosing SmartServe. Please keep this receipt for your records.</div>
+  </div>
+</body>
+</html>
